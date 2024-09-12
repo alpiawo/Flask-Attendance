@@ -1,5 +1,3 @@
-Sure, here's a detailed `README.md` for your Flask application:
-
 ---
 
 # Flask Attendance and Announcement Management System
