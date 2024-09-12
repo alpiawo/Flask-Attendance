@@ -1,0 +1,507 @@
+app password : agcfupsyqcyrxehk
+
+
+from flask import Flask, render_template, request, redirect, url_for, flash, session
+from datetime import datetime
+
+app = Flask(__name__)
+app.secret_key = 'your_secret_key'
+
+# Simulate a database with a dictionary
+user_attendance = {}
+
+@app.route('/attendance', methods=['POST'])
+def attendance():
+    user_id = session.get('user_id')  # Or however you identify the user
+    
+    # Check if the user has already submitted
+    if user_id in user_attendance:
+        flash('You have already submitted your attendance for today.', 'warning')
+        return redirect(url_for('success'))
+
+    # Process the attendance form
+    reason = request.form.get('izin')
+    # Save to database or perform any necessary actions
+    
+    # Mark user as having submitted
+    user_attendance[user_id] = datetime.now()
+    flash('Attendance submitted successfully!', 'success')
+    return redirect(url_for('success'))
+
+@app.route('/success')
+def success():
+    return render_template('success.html')
+
+@app.route('/logout')
+def logout():
+    session.pop('user_id', None)
+    return redirect(url_for('success'))
+
+if __name__ == '__main__':
+    app.run(debug=True)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Google Fonts - Poppins -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f4f5f7;
+            margin: 0;
+            padding: 0;
+        }
+        .navbar {
+            margin-bottom: 20px;
+        }
+        .navbar-brand {
+            font-weight: 600;
+        }
+        .navbar-nav {
+            flex-direction: row;
+        }
+        .nav-item {
+            margin-left: 15px;
+        }
+        .nav-link {
+            color: #ffffff;
+        }
+        .nav-link:hover {
+            color: #ffffff;
+            background-color: #0056b3;
+            border-radius: 4px;
+        }
+        .wrapper {
+            display: flex;
+            height: calc(100vh - 56px); /* Adjust height for navbar */
+        }
+        .sidebar {
+            width: 250px;
+            background-color: #343a40;
+            padding-top: 20px;
+            position: fixed;
+            top: 56px; /* Adjust for navbar height */
+            bottom: 0;
+            overflow-y: auto;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+        }
+        .sidebar a {
+            padding: 15px 20px;
+            text-decoration: none;
+            font-size: 18px;
+            color: #ffffff;
+            display: block;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .sidebar a:hover {
+            background-color: #007bff;
+            color: #ffffff;
+        }
+        .content {
+            margin-left: 250px;
+            padding: 20px;
+            flex: 1;
+        }
+        .content h1 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+        .content a {
+            font-size: 1.2rem;
+            color: #007bff;
+            text-decoration: none;
+        }
+        .content a:hover {
+            text-decoration: underline;
+        }
+        .announcement-item {
+            background-color: #ffffff;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .announcement-item h2 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+        .announcement-item p {
+            font-size: 1rem;
+            color: #6c757d;
+            margin-bottom: 10px;
+        }
+        .announcement-item a {
+            color: #007bff;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .announcement-item a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-success fixed-top">
+        <a class="navbar-brand" href="#">Admin Dashboard</a>
+        <div class="collapse navbar-collapse">
+            <ul class="navbar-nav mr-auto">
+                <!-- Add other nav items as needed -->
+            </ul>
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('logout') }}">Logout</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Wrapper to hold sidebar and content -->
+    <div class="wrapper">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <a href="{{ url_for('admin_page') }}">Dashboard</a>
+            <a href="{{ url_for('announcements') }}">Announcements</a>
+            <a href="{{ url_for('profile') }}">Profile</a>
+            <a href="{{ url_for('export_attendance') }}">Export Attendance</a>
+            <a href="{{ url_for('announcements') }}">Announcements</a>
+            <!-- Add other sidebar links as needed -->
+        </div>
+
+        <!-- Main content -->
+        <div class="content">
+            <h1>Announcements</h1>
+            <a href="{{ url_for('create_announcement') }}" class="btn btn-primary mb-3 text-light">Create New Announcement</a>
+            <div>
+                {% for announcement in announcements %}
+                <div class="announcement-item">
+                    <h2>{{ announcement[1] }}</h2>
+                    <p>{{ announcement[2] }}</p>
+                    <p><small>{{ announcement[3] }}</small></p>
+                    <a href="{{ url_for('edit_announcement', id=announcement[0]) }}">Edit</a>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS, Popper.js, and jQuery -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Google Fonts - Poppins -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <!-- FontAwesome CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f0f2f5;
+            margin: 0;
+            padding: 0;
+        }
+        .navbar-brand {
+            font-weight: 600;
+        }
+        .wrapper {
+            display: flex;
+            min-height: 100vh;
+        }
+        .sidebar {
+            width: 250px;
+            background-color: #343a40;
+            color: #fff;
+            height: 100%;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 100;
+            transition: all 0.3s;
+        }
+        .sidebar .nav-link {
+            color: #fff;
+            padding: 15px 20px;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            transition: background-color 0.3s;
+        }
+        .sidebar .nav-link i {
+            margin-right: 10px;
+        }
+        .sidebar .nav-link:hover, .sidebar .active {
+            background-color: #007bff;
+            color: white;
+        }
+        .content {
+            flex: 1;
+            padding: 20px;
+            margin-left: 250px;
+            transition: margin-left 0.3s;
+        }
+        .top-menu {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        .top-menu .card {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .card {
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .card-header {
+            background-color: #007bff;
+            color: #fff;
+        }
+        .card-body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        .card-body img {
+            border-radius: 50%;
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            margin-bottom: 10px;
+        }
+        .card-body h5 {
+            margin-bottom: 5px;
+        }
+        .card-body p {
+            margin-bottom: 10px;
+            color: #6c757d;
+        }
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: static;
+                overflow: hidden;
+            }
+            .content {
+                margin-left: 0;
+            }
+            .top-menu {
+                flex-direction: column;
+            }
+            .top-menu .card {
+                width: 100%;
+                margin-bottom: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-success">
+        <a class="navbar-brand" href="#" class="">Admin Dashboard</a>
+        <div class="collapse navbar-collapse">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('logout') }}">Logout</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Wrapper to hold sidebar and content -->
+    <div class="wrapper">
+        <!-- Sidebar -->
+        <nav id="sidebar" class="sidebar">
+            <div class="sidebar-header">
+                <h3>Admin Dashboard</h3>
+            </div>
+            <ul class="nav flex-column">
+                <li class="nav-item">
+                    <a class="nav-link active" href="{{ url_for('admin_page') }}"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('announcements') }}"><i class="fas fa-bullhorn"></i> Announcements</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#"><i class="fas fa-user"></i> Profile</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#"><i class="fas fa-file-export"></i> Export</a>
+                </li>
+            </ul>
+        </nav>
+
+        <!-- Main content -->
+        <div class="content">
+            <!-- Top Menu - Stats -->
+            <div class="top-menu">
+                <div class="card border-info mb-3" style="width: 18rem;">
+                    <div class="card-body">
+                        <h5 class="card-title">Total Staff</h5>
+                        <p class="card-text">{{ total_staff }}</p>
+                    </div>
+                </div>
+
+                <div class="card border-warning mb-3" style="width: 18rem;">
+                    <div class="card-body">
+                        <h5 class="card-title">Total Telat</h5>
+                        <p class="card-text">{{ total_user_telat }}</p>
+                    </div>
+                </div>
+
+                <div class="card border-success mb-3" style="width: 18rem;">
+                    <div class="card-body">
+                        <h5 class="card-title">Total Tidak Telat</h5>
+                        <p class="card-text">{{ total_user_tidak_telat }}</p>
+                    </div>
+                </div>
+
+                <div class="card border-danger mb-3" style="width: 18rem;">
+                    <div class="card-body">
+                        <h5 class="card-title">Total Alpha</h5>
+                        <p class="card-text">{{ total_user_alpha }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- User Attendance Cards -->
+            <h2>User Attendance Data</h2>
+            <a href="{{ url_for('export_attendance') }}" class="btn btn-success mb-3">Export to Excel</a>
+            <div class="row">
+                {% for row in data %}
+                <div class="col-md-4 mb-4">
+                    <div class="card">
+                        <div class="card-header">
+                            {{ row[0] }}
+                        </div>
+                        <div class="card-body text-center">
+                            <img src="https://img.icons8.com/bubbles/100/000000/user.png" alt="User-Profile-Image">
+                            <h5 class="card-title">{{ row[0] }}</h5>
+                            <p class="card-text"><strong>Email:</strong> {{ row[1] }}</p>
+                            <p class="card-text"><strong>Timestamp:</strong> {{ row[2] }}</p>
+                            <p class="card-text"><strong>Status:</strong> {{ row[3] }}</p>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS, Popper.js, and jQuery -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

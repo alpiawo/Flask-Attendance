@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Poppins Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            background: url('{{ url_for('static', filename='img/body-2.jpg') }}') no-repeat center center fixed;
+            font-family: 'Poppins', sans-serif;
+        }
+        .register-card {
+            max-width: 1200px;
+            margin: auto;
+            border-radius: 0.75rem;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: row;
+        }
+        .card-body {
+            padding: 2rem;
+        }
+        .alert {
+            transition: opacity 0.5s ease-in-out;
+        }
+        .form-control {
+            padding-left: 2.5rem;
+        }
+        .form-icon {
+            position: absolute;
+            left: 0.75rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6c757d;
+        }
+        .form-group {
+            position: relative;
+        }
+        @media (max-width: 767px) {
+            .register-card {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body class="container d-flex justify-content-center align-items-center vh-100">
+    <div class="register-card card">
+        <!-- Registration Form -->
+        <div class="col-md-6 d-flex align-items-center">
+            <div class="card-body">
+                <h1 class="card-title mb-4">Register</h1>
+
+                {% with messages = get_flashed_messages() %}
+                    {% if messages %}
+                        <div class="alert alert-info alert-dismissible fade show" role="alert">
+                            {% for message in messages %}
+                                {{ message }}<br>
+                            {% endfor %}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endif %}
+                {% endwith %}
+
+                <form action="{{ url_for('register') }}" method="POST">
+                    <div class="row">
+                        <!-- Column 1 -->
+                        <div class="col-md-12 mb-3">
+                            <div class="form-group position-relative">
+                                <label for="name" class="form-label">Nama Lengkap:<span class="fw-bold text-danger">*</span></label>
+                                <input type="text" id="name" name="name" class="form-control" required>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <div class="form-group position-relative">
+                                <label for="username" class="form-label">Username:<span class="fw-bold text-danger">*</span></label>
+                                <input type="text" id="username" name="username" class="form-control" required>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <div class="form-group position-relative">
+                                <label for="tgl_lahir" class="form-label">Tanggal Lahir:<span class="fw-bold text-danger">*</span></label>
+                                <input type="date" id="tgl_lahir" name="tgl_lahir" class="form-control" required>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <div class="form-group position-relative">
+                                <label for="email" class="form-label">Email:<span class="fw-bold text-danger">*</span></label>
+                                <input type="email" id="email" name="email" class="form-control" required>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <div class="form-group position-relative">
+                                <label for="password" class="form-label">Password:<span class="fw-bold text-danger">*</span></label>
+                                <input type="password" id="password" name="password" class="form-control" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary py-2 px-3 w-100">Register</button>
+                </form>
+
+                <p class="text-center mt-3">Sudah punya akun? <a href="{{ url_for('index') }}">Login</a></p>
+            </div>
+        </div>
+
+        <!-- Carousel Image Section -->
+        <div class="col-md-6 d-none d-md-block">
+            <div id="carouselExampleAutoplay" class="carousel slide" data-bs-ride="carousel">
+                <div class="carousel-inner">
+                    <div class="carousel-item active">
+                        <img src="{{ url_for('static', filename='img/pic-1.png') }}" class="d-block" alt="Image 1">
+                    </div>
+                    <div class="carousel-item">
+                        <img src="{{ url_for('static', filename='img/pic-2.png') }}" class="d-block" alt="Image 2">
+                    </div>
+                    <div class="carousel-item">
+                        <img src="{{ url_for('static', filename='img/pic-3.png') }}" class="d-block" alt="Image 3">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

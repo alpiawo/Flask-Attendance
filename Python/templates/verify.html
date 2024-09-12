@@ -1,0 +1,99 @@
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Verifikasi OTP</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+        <style>
+            body {
+                background: url('{{ url_for('static', filename='img/body-2.jpg') }}') no-repeat center center fixed;
+                font-family: 'Poppins', sans-serif;
+                background-color: #f8f9fa;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                height: 100vh;
+                margin: 0;
+            }
+
+            .container {
+                max-width: 400px;
+                background-color: #ffffff;
+                padding: 2rem;
+                border-radius: 8px;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            }
+
+            h1 {
+                font-size: 1.5rem;
+                margin-bottom: 1.5rem;
+                text-align: center;
+            }
+
+            .form-group {
+                margin-bottom: 1rem;
+            }
+
+            button {
+                width: 100%;
+            }
+
+            ul {
+                list-style: none;
+                padding-left: 0;
+                color: red;
+            }
+
+            li {
+                margin-bottom: 0.5rem;
+            }
+
+            .alert {
+                margin-bottom: 1rem;
+            }
+        </style>
+    </head>
+
+    <body>
+        <div class="container">
+            <h1>Verifikasi OTP</h1>
+            {% with messages = get_flashed_messages() %}
+            {% if messages %}
+            <div class="alert alert-info alert-dismissible fade show" role="alert">
+                <ul>
+                    {% for message in messages %}
+                    <li>{{ message }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+            {% endwith %}
+
+            <form action="{{ url_for('verify_otp_route') }}" method="POST">
+                <div class="form-group">
+                    <label for="otp">Masukkan kode OTP:</label>
+                    <input type="text" id="otp" name="otp" class="form-control" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Verifikasi</button>
+            </form>
+        </div>
+
+        <script>
+            // Mengatur durasi flash message
+            setTimeout(function() {
+                let alertElement = document.querySelector('.alert');
+                if (alertElement) {
+                    alertElement.classList.remove('show');
+                    alertElement.classList.add('fade');
+                    setTimeout(function() {
+                        alertElement.remove();
+                    }, 300);
+                }
+            }, 3000);
+        </script>
+    </body>
+
+    </html>
