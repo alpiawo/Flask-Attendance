@@ -27,7 +27,7 @@ This Flask application provides an attendance management system with user and ad
 1. **Clone the Repository**
 
    ```bash
-   git clone https://github.com/alpiawo/my-resources.git
+   git clone https://github.com/alpiawo/Flask-Attendance.git
    cd <repository-directory>
    ```
 
