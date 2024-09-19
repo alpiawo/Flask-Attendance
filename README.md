@@ -6,11 +6,13 @@ This Flask application provides an attendance management system with user and ad
 
 ## Features
 
-- **User Authentication**: Register, login, and reset passwords with OTP verification.
-- **Attendance Management**: Track attendance with automatic status marking and daily deletion of attendance records.
-- **Admin Dashboard**: Manage users, view attendance statistics, and handle announcements.
-- **Announcement Management**: Create, edit, and view announcements.
-- **Data Export**: Export attendance data to an Excel file.
+- **User Registration & Login:** Users can register and log in using a secure system with hashed passwords.
+- **OTP Verification:** After login, users are required to verify their identity via a One-Time Password (OTP) sent to their email.
+- **Attendance Management:** Users can submit their attendance, which is automatically marked as late, absent (alpha), or on time based on the submission time.
+- **Admin Dashboard:** Admin users can view all user attendance records, manage user profiles, and create/edit announcements.
+- **Automated Attendance:** Automatically marks absent users who haven't submitted attendance by a set time.
+- **Data Export:** Admins can export attendance data to Excel format for record-keeping.
+- **Announcements:** Admins can create and manage announcements that are visible to users.
 
 ## Requirements
 
